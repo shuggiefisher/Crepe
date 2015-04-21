@@ -5,8 +5,8 @@ By Xiang Zhang @ New York University
 
 -- Necessary functionalities
 require("nn")
-require("cutorch")
-require("cunn")
+-- require("cutorch")
+-- require("cunn")
 require("gnuplot")
 
 -- Local requires
@@ -29,10 +29,10 @@ main = {}
 -- The main program
 function main.main()
    -- Setting the device
-   if config.main.device then
+   --[[if config.main.device then
       cutorch.setDevice(config.main.device)
       print("Device set to "..config.main.device)
-   end
+   end--]]
 
    main.clock = {}
    main.clock.log = 0
@@ -49,10 +49,10 @@ function main.argparse()
    -- Options
    cmd:option("-resume",0,"Resumption point in epoch. 0 means not resumption.")
    cmd:text()
-   
+
    -- Parse the option
    local opt = cmd:parse(arg or {})
-   
+
    -- Resumption operation
    if opt.resume > 0 then
       -- Find the main resumption file
@@ -159,7 +159,7 @@ function main.run()
 	 main.record[#main.record].train_confusion = main.test_train.confusion:clone()
 	 main.record[#main.record].val_confusion = main.test_val.confusion:clone()
       end
-      
+
       print("Visualizing loss")
       main.show()
       print("Visualizing the models")
@@ -241,7 +241,7 @@ function main.trainlog(train)
 
    if (os.time() - main.clock.log) >= (config.main.logtime or 1) then
       local msg = ""
-      
+
       if config.main.details then
 	 msg = msg.."epo: "..(train.epoch-1)..
 	    ", rat: "..string.format("%.2e",train.rate)..
@@ -252,7 +252,7 @@ function main.trainlog(train)
 	    ", bpp: "..string.format("%.2e",train.time.backward)..
 	    ", upd: "..string.format("%.2e",train.time.update)
       end
-      
+
       if config.main.debug then
 	 msg = msg..", bmn: "..string.format("%.2e",train.batch:mean())..
 	    ", bsd: "..string.format("%.2e",train.batch:std())..
@@ -272,7 +272,7 @@ function main.trainlog(train)
 	    ", omx: "..string.format("%.2e",train.old_grads:max())
 	 main.draw()
       end
-      
+
       if config.main.details or config.main.debug then
 	 print(msg)
       end

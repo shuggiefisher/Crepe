@@ -64,9 +64,9 @@ function Model:type(tensortype)
 end
 
 -- Switch to cuda
-function Model:cuda()
+--[[function Model:cuda()
    self:type("torch.CudaTensor")
-end
+end--]]
 
 -- Switch to double
 function Model:double()
