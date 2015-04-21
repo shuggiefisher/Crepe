@@ -7,14 +7,14 @@ By Xiang Zhang @ New York University
 require("nn")
 require("cutorch")
 require("cunn")
-require("gnuplot")
+-- require("gnuplot")
 
 -- Local requires
 require("data")
 require("model")
 require("train")
 require("test")
-require("mui")
+-- require("mui")
 
 -- Configurations
 dofile("config.lua")
@@ -49,10 +49,10 @@ function main.argparse()
    -- Options
    cmd:option("-resume",0,"Resumption point in epoch. 0 means not resumption.")
    cmd:text()
-   
+
    -- Parse the option
    local opt = cmd:parse(arg or {})
-   
+
    -- Resumption operation
    if opt.resume > 0 then
       -- Find the main resumption file
@@ -116,12 +116,12 @@ function main.new()
       local resume = torch.load(config.main.resume)
       main.record = resume.record
       if resume.momentum then main.train.old_grads:copy(resume.momentum) end
-      main.show()
+      -- main.show()
    end
 
    -- The visualization
-   main.mui = Mui{width=config.mui.width,scale=config.mui.scale,n=config.mui.n,title="Model Visualization"}
-   main.draw()
+   -- main.mui = Mui{width=config.mui.width,scale=config.mui.scale,n=config.mui.n,title="Model Visualization"}
+   -- main.draw()
    collectgarbage()
 end
 
@@ -159,11 +159,11 @@ function main.run()
 	 main.record[#main.record].train_confusion = main.test_train.confusion:clone()
 	 main.record[#main.record].val_confusion = main.test_val.confusion:clone()
       end
-      
-      print("Visualizing loss")
-      main.show()
-      print("Visualizing the models")
-      main.draw()
+
+      -- print("Visualizing loss")
+      -- main.show()
+      -- print("Visualizing the models")
+      -- main.draw()
       print("Saving data")
       main.save()
       collectgarbage()
@@ -173,7 +173,7 @@ end
 -- Final cleaning up
 function main.clean()
    print("Cleaning up...")
-   gnuplot.closeall()
+   -- gnuplot.closeall()
 end
 
 -- Draw the graph
@@ -198,14 +198,14 @@ function main.show(figure_error,figure_loss)
    end
 
    -- Do the plot
-   gnuplot.figure(figure_error)
-   gnuplot.plot({"Train",epoch,train_error},{"Validate",epoch,val_error})
-   gnuplot.title("Training and validating error")
-   gnuplot.plotflush()
-   gnuplot.figure(figure_loss)
-   gnuplot.plot({"Train",epoch,train_loss},{"Validate",epoch,val_loss})
-   gnuplot.title("Training and validating loss")
-   gnuplot.plotflush()
+   -- gnuplot.figure(figure_error)
+   -- gnuplot.plot({"Train",epoch,train_error},{"Validate",epoch,val_error})
+   -- gnuplot.title("Training and validating error")
+   -- gnuplot.plotflush()
+   -- gnuplot.figure(figure_loss)
+   -- gnuplot.plot({"Train",epoch,train_loss},{"Validate",epoch,val_loss})
+   -- gnuplot.title("Training and validating loss")
+   -- gnuplot.plotflush()
 end
 
 -- Draw the visualization
@@ -224,11 +224,11 @@ function main.save()
 	      {config = config, record = main.record, momentum = main.train.old_grads:double()})
    torch.save(paths.concat(config.main.save,"sequential_"..(main.train.epoch-1).."_"..time..".t7b"),
 	      main.model:clearSequential(main.model:makeCleanSequential(main.model.sequential)))
-   main.eps_error = main.eps_error or gnuplot.epsfigure(paths.concat(config.main.save,"figure_error.eps"))
-   main.eps_loss = main.eps_loss or gnuplot.epsfigure(paths.concat(config.main.save,"figure_loss.eps"))
-   main.show(main.eps_error,main.eps_loss)
-   local ret = pcall(function() main.mui.win:save(paths.concat(config.main.save,"sequential_"..(main.train.epoch-1).."_"..time..".png")) end)
-   if not ret then print("Warning: saving the model image failed") end
+   -- main.eps_error = main.eps_error or gnuplot.epsfigure(paths.concat(config.main.save,"figure_error.eps"))
+   -- main.eps_loss = main.eps_loss or gnuplot.epsfigure(paths.concat(config.main.save,"figure_loss.eps"))
+   -- main.show(main.eps_error,main.eps_loss)
+   -- local ret = pcall(function() main.mui.win:save(paths.concat(config.main.save,"sequential_"..(main.train.epoch-1).."_"..time..".png")) end)
+   -- if not ret then print("Warning: saving the model image failed") end
    collectgarbage()
 end
 
@@ -241,7 +241,7 @@ function main.trainlog(train)
 
    if (os.time() - main.clock.log) >= (config.main.logtime or 1) then
       local msg = ""
-      
+
       if config.main.details then
 	 msg = msg.."epo: "..(train.epoch-1)..
 	    ", rat: "..string.format("%.2e",train.rate)..
@@ -252,7 +252,7 @@ function main.trainlog(train)
 	    ", bpp: "..string.format("%.2e",train.time.backward)..
 	    ", upd: "..string.format("%.2e",train.time.update)
       end
-      
+
       if config.main.debug then
 	 msg = msg..", bmn: "..string.format("%.2e",train.batch:mean())..
 	    ", bsd: "..string.format("%.2e",train.batch:std())..
@@ -270,9 +270,9 @@ function main.trainlog(train)
 	    ", osd: "..string.format("%.2e",train.old_grads:std())..
 	    ", omi: "..string.format("%.2e",train.old_grads:min())..
 	    ", omx: "..string.format("%.2e",train.old_grads:max())
-	 main.draw()
+	 -- main.draw()
       end
-      
+
       if config.main.details or config.main.debug then
 	 print(msg)
       end
